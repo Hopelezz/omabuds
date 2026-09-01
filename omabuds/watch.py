@@ -29,9 +29,14 @@ def _close_client(
 
 
 def _peer_uid(client: socket.socket) -> int:
-    raw = client.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, struct.calcsize("3i"))
-    _pid, uid, _gid = struct.unpack("3i", raw)
-    return uid
+    try:
+        raw = client.getsockopt(
+            socket.SOL_SOCKET, socket.SO_PEERCRED, struct.calcsize("3i")
+        )
+        _pid, uid, _gid = struct.unpack("3i", raw)
+        return uid
+    except (OSError, struct.error, ValueError):
+        return -1
 
 
 def _expire_clients(
@@ -65,7 +70,7 @@ def _accept_client(
         if last[0]:
             client.sendall((last[0] + "\n").encode())
             activity[client] = time.monotonic()
-    except OSError:
+    except (OSError, struct.error):
         _close_client(clients, activity, client)
 
 
@@ -196,6 +201,9 @@ def _own(server: socket.socket) -> None:
                     ready = select.select([sock, 0, server] + clients, [], [], 3)[0]
                     if not ready and last[0]:
                         print(last[0], flush=True)
+                        now = time.monotonic()
+                        for client in clients:
+                            activity[client] = now
                         continue
                     for source in ready:
                         if source is sock:

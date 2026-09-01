@@ -68,6 +68,13 @@ class WatchSecurityTests(unittest.TestCase):
         self.assertFalse(fresh.closed)
         self.assertEqual(clients, [fresh])
 
+    def test_peer_uid_rejects_short_credentials(self) -> None:
+        class _ShortCredClient:
+            def getsockopt(self, _level: int, _optname: int, _size: int) -> bytes:
+                return b"\x00\x00"
+
+        self.assertEqual(watch._peer_uid(_ShortCredClient()), -1)  # type: ignore[arg-type]
+
 
 if __name__ == "__main__":
     unittest.main()
