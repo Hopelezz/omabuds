@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+"""Omabuds command-line launcher."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+# Bytecode files in the plugin folder make Omarchy reload the widget in a loop.
+sys.dont_write_bytecode = True
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+except (AttributeError, OSError):
+    pass
+
+PLUGIN_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PLUGIN_ROOT))
+
+from omabuds.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

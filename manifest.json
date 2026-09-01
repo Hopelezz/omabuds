@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.hopelezz.omabuds",
+  "name": "Omabuds",
+  "version": "0.1.0",
+  "author": "hopelezz",
+  "license": "MIT",
+  "description": "Galaxy Buds noise control, battery, and ear-detection auto-pause in the Omarchy bar.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Omabuds",
+    "description": "Switch noise modes, read per-bud battery and charging.",
+    "category": "Audio",
+    "aliases": ["buds", "galaxy", "samsung", "anc"],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "showBattery": true,
+      "earBehavior": "One out"
+    },
+    "schema": [
+      {
+        "key": "showBattery",
+        "type": "boolean",
+        "label": "Show battery percent in the bar"
+      },
+      {
+        "key": "earBehavior",
+        "type": "enum",
+        "label": "Pause the music",
+        "options": ["One out", "Both out", "Never"],
+        "defaultValue": "One out",
+        "description": "When a bud out of your ear stops the music."
+      }
+    ]
+  }
+}
